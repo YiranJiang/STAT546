@@ -98,4 +98,41 @@ data$age_clean[age>40&age<60]<-2
 data$age_clean[age>60]<-3
 
 
+data[is.na(data$sex_clean),]
+data$symptoms_clean <- unlist(data$symptoms_clean)
+
+data$symptoms_clean[data$symptoms_clean == 'Missing'|
+                      data$symptoms_clean == ''] <- NA
+
+## Remove rows with all NAs
+data <- data %>%
+  filter(!is.na(age_clean) | !is.na(outcome_clean)| !is.na(symptoms_clean)| !is.na(sex_clean))
+dim(data)
+
+my_data <- data.frame(matrix(NA,nrow = nrow(data), ncol = 16))
+colnames(my_data) <- c('Age','Gender',unique(us_vec),'Outcome')
+
+
+for (i in 1:nrow(my_data)){
+  my_data[i,1] <- data[i,37]
+  my_data[i,2] <- data[i,35]
+  my_data[i,16] <- data[i,36]
+  
+  ## Input symptoms
+  if (!is.na(data[i,34])){
+  for (j in unique(us_vec)){
+    if(grepl(j, data[i,34], fixed = TRUE)){
+      my_data[i,j] <- 1 
+    }else{
+      my_data[i,j] <- 0 
+    }
+  }
+  }
+  
+}
+
+write.csv(my_data,"cleaned_data.csv")
+
+
+
 

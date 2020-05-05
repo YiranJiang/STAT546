@@ -35,3 +35,15 @@ data$sex_clean<-rep(NA,nrow(data))
 data$sex_clean[grep('male',data$sex)]<-0
 data$sex_clean[grep('female',data$sex)]<-1
 
+## Extract Outcome data
+outcome <- as.character(data$outcome)
+outcome_vec <- unlist(strsplit(outcome,',|, |; |: |;|:'))
+outcome_vec <- gsub("[[:punct:]]", "", outcome_vec)
+outcome_vec <- gsub("[0-9]", "", outcome_vec)
+as.data.frame(unique(outcome_vec))
+data$outcome_clean<-rep(NA,nrow(data))
+# 0-recovered 1-dead 2-ICU 3-Hospitalized
+data$outcome_clean[grep('discharged|Discharged|recovered|discharge',data$outcome)]<-0
+data$outcome_clean[grep('death|dead|died|Deceased',data$outcome)]<-1
+data$outcome_clean[grep('treated in an intensive care unit',data$outcome)]<-2
+data$outcome_clean[grep('Receiving Treatment|stable',data$outcome)]<-3

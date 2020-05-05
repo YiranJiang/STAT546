@@ -51,8 +51,10 @@ data$symptoms_clean[grep('^pneumonia$',data$symptoms)] <- "Missing"
 data$symptoms_clean[grep('^pulmonary$',data$symptoms)] <- "Missing"
 data$symptoms_clean[grep('^fatigue$',data$symptoms)] <- "Missing"
 data$symptoms_clean[grep('^discomfort$',data$symptoms)] <- "Missing"
+data$symptoms[grep("^severe pneumonia$",data$symptoms)] <- "Missing"
+data$symptoms[grep("^sepsis:pneumonia$",data$symptoms)] <- "Missing"
 
-data$symptoms_clean[grep('mild:moderate|mild to moderate|mild symptoms|covid|pnuemonia|pneumonitis|lesions|physical|yes|flulike|somnolence|hcovbrazilspbr|myelofibrosis',data$symptoms)] <- "Missing"
+data$symptoms_clean[grep('Missing|pulmonary symptomatology|mild:moderate|mild to moderate|mild symptoms|covid|pnuemonia|pneumonitis|hcov|lesions|physical|yes|flu-like|somnolence|hcovbrazilspbr|myelofibrosis|transient|multiple organ failure',data$symptoms)] <- "Missing"
 
 ## Cleaned symptoms
 u<-unique(data$symptoms_clean)

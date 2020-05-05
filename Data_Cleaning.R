@@ -30,5 +30,8 @@ unique(symp_vec)
 symp_vec[grep('fever',symp_vec)]
 data$symptoms[grep('fever',data$symptoms)]
 
-
+## Extract gender data
+data$sex_clean<-rep(NA,nrow(data))
+data$sex_clean[grep('male',data$sex)]<-0
+data$sex_clean[grep('female',data$sex)]<-1
 

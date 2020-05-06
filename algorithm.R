@@ -12,6 +12,8 @@ rownames(adjmat) <- names
 colnames(adjmat) <- names
 adjmat[6,3] <- 0
 adjmat[9,7] <- 0
+adjmat[6:14,15] <- 0
+
 
 my_order <- c(1,2,4,7,8,10,3,5,6,9,11,12,13,14,15)
 data <- data[,my_order]
@@ -22,53 +24,44 @@ numvalues <- c(4,rep(2,14)) ## number of values that can be taken of each parame
 
 ## Useful Function
 mb <- function(this.sample, k){ ## Markov Blanket Probability
-  this.sample[k] <- 0
-  if(k > nroot){ ## Not the root node
-    p_0 <- theta_list[[k-nroot]][matrix(c(this.sample[which(adjmat[,k]==1)]+1),1)] ## P(X_miss=0|Pa(X_miss))
-  }else{
-    p_0 <- 1
-  }
-  for(i in which(adjmat[k,]==1)){ ## The children
-    if (this.sample[i] == 0){ ## P(Ch(X_miss)_i = 0| Pa(Ch(X_miss)))
-      p_0 <- p_0*(1-theta_list[[i-nroot]][matrix(c(this.sample[which(adjmat[,i]==1)]+1),1)])
+  p_vec <- rep(NA,numvalues[k])
+  for (s in ((1:numvalues[k]))){
+    this.sample[k] <- s-1
+    if(k > nroot){ ## Not the root node
+      p_0 <- theta_list[[k-nroot]][matrix(c(this.sample[which(adjmat[,k]==1)]+1),1)] ## P(X_miss=0|Pa(X_miss))
+    }else{
+      p_0 <- 1
     }
-    if (this.sample[i] == 1){ ## P(Ch(X_miss)_i = 1| Pa(Ch(X_miss)))
-      p_0 <- p_0*theta_list[[i-nroot]][matrix(c(this.sample[which(adjmat[,i]==1)]+1),1)]
+    for(i in which(adjmat[k,]==1)){ ## The children
+      if (this.sample[i] == 0){ ## P(Ch(X_miss)_i = 0| Pa(Ch(X_miss)))
+        p_0 <- p_0*(1-theta_list[[i-nroot]][matrix(c(this.sample[which(adjmat[,i]==1)]+1),1)])
+      }
+      if (this.sample[i] == 1){ ## P(Ch(X_miss)_i = 1| Pa(Ch(X_miss)))
+        p_0 <- p_0*theta_list[[i-nroot]][matrix(c(this.sample[which(adjmat[,i]==1)]+1),1)]
+      }
     }
-  }
-  
-  this.sample[k] <- 1
-  if(k > nroot){ ## Not the root node
-    p_1 <- theta_list[[k-nroot]][matrix(c(this.sample[which(adjmat[,k]==1)]+1),1)] ## P(X_miss=1|Pa(X_miss))
-  }else{
-    p_1 <- 1
-  }
-  for(i in which(adjmat[k,]==1)){ ## The childrens
-    if (this.sample[i] == 0){ ## P(Ch(X_miss)_i = 0| Pa(Ch(X_miss)))
-      p_1 <- p_1*(1-theta_list[[i-nroot]][matrix(c(this.sample[which(adjmat[,i]==1)]+1),1)])
-    }
-    if (this.sample[i] == 1){ ## P(Ch(X_miss)_i = 1| Pa(Ch(X_miss)))
-      p_1 <- p_1*theta_list[[i-nroot]][matrix(c(this.sample[which(adjmat[,i]==1)]+1),1)]
-    }
-    
+    p_vec[s] <- p_0
   }
   
-  update.value <- base::sample(c(0,1),1, prob = c(p_0/(p_0+p_1), p_1/(p_0+p_1)))
+  update.value <- base::sample((seq(numvalues[k])-1),1, prob = p_vec/sum(p_vec))
+  
   return(update.value)
 }
 
 
 # Test with a small subset
-savedata <-data
-saveadjmat <-adjmat
-data <- data[1:50,-15]
-adjmat <- adjmat[-15,-15]
-m <- 14
-theta_list <- vector("list", m-nroot)
-N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
+# savedata <-data
+# saveadjmat <-adjmat
+# data <- data[1:50,-15]
+# adjmat <- adjmat[-15,-15]
+# m <- 14
+
+## Step back
+# data <- savedata
+# adjmat <- saveadjmat
+
+
 numvalues <- c(4,rep(2,m-1))
-
-
 theta_list <- vector("list", m-nroot)
 N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
 
@@ -79,13 +72,15 @@ for(i in 1:(m-nroot)){
                            dim=numvalues[which(adjmat[,(i+nroot)]==1)])
 }
 
-
+length(unlist(theta_list)) ## number of parameters
 
 Rt_hist <- c()
 ll_hist <- c()
-  
-for(u in 1: 10){ ## Try 10 iterations
+Rt <- Inf
+u <- 0
 
+while(Rt > 0.1){
+  u <- u + 1
   cat('============== Iteration ', u,' ==============\n')
   ## E-step
   ## Initialize countings

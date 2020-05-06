@@ -26,5 +26,6 @@ for(i in 1:n){
 }
 structure<-iamb(data)
 print(structure)
+# To see the adjacency matrix, use amat()
 result<-bn.fit(e,data,method="bayes")
 print(result)

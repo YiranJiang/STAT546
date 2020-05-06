@@ -36,22 +36,22 @@ N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
 numvalues <- c(4,rep(2,m-1))
 
 
+## Initialize parameters
 for(i in 1:(m-nroot)){
   print(which(adjmat[,(i+nroot)]==1))
-  ## Initialize parameters
   theta_list[[i]] <- array(0.5,
                            dim=numvalues[which(adjmat[,(i+nroot)]==1)])
 }
 
+## Initialize countings
 for(i in 1:(m-nroot)){
-  ## Initialize countings
   N_list[[1]][[i]] <- array(1e-4,
                       dim=numvalues[which(adjmat[,(i+nroot)]==1)])
   N_list[[2]][[i]] <- array(1e-4,
                             dim=numvalues[which(adjmat[,(i+nroot)]==1)])
 }
 
-
+## Useful Function
 mb <- function(this.sample, k){ ## Markov Blanket Probability
   this.sample[k] <- 0
   if(k > nroot){ ## Not the root node

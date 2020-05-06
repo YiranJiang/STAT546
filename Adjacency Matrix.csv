@@ -1,17 +1,18 @@
-﻿,Age,Gender,Fever,Cough,Dyspnea,Body.Pain,Diarrhea,Anorexia,Rhinorrhea,Chills,Asymptomatic,Kidney.Injury,Heart.Failure,Septic.Shock,Outcome
-Age,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Gender,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Fever,0,1,0,0,0,1,0,1,0,0,0,0,0,0,0
-Cough,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Dyspnea,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0
-Body.Pain,0,0,1,0,0,0,0,0,1,1,0,0,0,0,0
-Diarrhea,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0
-Anorexia,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Rhinorrhea,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0
-Chills,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Asymptomatic,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-Kidney.Injury,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0
-Heart.Failure,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0
-Septic.Shock,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
-Outcome,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0
-,,,,,,,,,,,,,,,
+	Age	Gender	Fever	Cough	Dyspnea	Body.Pain	Diarrhea	Anorexia	Rhinorrhea	Chills	Asymptomatic	Kidney.Injury	Heart.Failure	Septic.Shock	Outcome
+															
+Age	0	0	0	0	1	0	0	0	0	0	1	0	0	0	1
+Gender	0	0	1	0	0	0	0	0	1	0	0	0	0	0	1
+Fever	0	0	0	0	1	0	0	0	0	0	0	0	0	1	1
+Cough	0	0	0	0	0	0	0	0	0	0	0	0	1	1	1
+Dyspnea	0	0	0	0	0	0	0	0	0	0	0	1	0	0	1
+Body.Pain	0	0	1	0	1	0	0	0	0	0	0	0	0	0	1
+Diarrhea	0	0	0	0	0	0	0	0	1	0	0	0	0	0	1
+Anorexia	0	0	1	0	0	0	0	0	0	0	0	0	0	0	1
+Rhinorrhea	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1
+Chills	0	0	0	0	0	1	0	0	0	0	0	0	0	0	1
+Asymptomatic	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Kidney.Injury	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Heart.Failure	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Septic.Shock	0	0	0	0	0	0	0	0	0	0	0	0	0	0	1
+Outcome	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+"Showing 1 to 15 of 15 entries, 15 total columns"															

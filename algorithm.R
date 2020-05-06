@@ -17,39 +17,8 @@ my_order <- c(1,2,4,7,8,10,3,5,6,9,11,12,13,14,15)
 data <- data[,my_order]
 adjmat <- adjmat[my_order,my_order]
 nroot <- 6
-
-# adjmat <- matrix(1, nrow = m, ncol = m)
-theta_list <- vector("list", m-nroot)
-N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
-
 numvalues <- c(4,rep(2,14)) ## number of values that can be taken of each parameter
 
-
-# test with a small subset
-savedata <-data
-saveadjmat <-adjmat
-data <- data[1:50,-15]
-adjmat <- adjmat[-15,-15]
-m <- 14
-theta_list <- vector("list", m-nroot)
-N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
-numvalues <- c(4,rep(2,m-1))
-
-
-## Initialize parameters
-for(i in 1:(m-nroot)){
-  print(which(adjmat[,(i+nroot)]==1))
-  theta_list[[i]] <- array(0.5,
-                           dim=numvalues[which(adjmat[,(i+nroot)]==1)])
-}
-
-## Initialize countings
-for(i in 1:(m-nroot)){
-  N_list[[1]][[i]] <- array(1e-4,
-                      dim=numvalues[which(adjmat[,(i+nroot)]==1)])
-  N_list[[2]][[i]] <- array(1e-4,
-                            dim=numvalues[which(adjmat[,(i+nroot)]==1)])
-}
 
 ## Useful Function
 mb <- function(this.sample, k){ ## Markov Blanket Probability
@@ -89,12 +58,43 @@ mb <- function(this.sample, k){ ## Markov Blanket Probability
 }
 
 
+# Test with a small subset
+savedata <-data
+saveadjmat <-adjmat
+data <- data[1:50,-15]
+adjmat <- adjmat[-15,-15]
+m <- 14
+theta_list <- vector("list", m-nroot)
+N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
+numvalues <- c(4,rep(2,m-1))
+
+
+theta_list <- vector("list", m-nroot)
+N_list <- list(vector("list", m-nroot), vector("list", m-nroot))
+
+## Initialize parameters
+for(i in 1:(m-nroot)){
+  print(which(adjmat[,(i+nroot)]==1))
+  theta_list[[i]] <- array(0.5,
+                           dim=numvalues[which(adjmat[,(i+nroot)]==1)])
+}
+
+
 
 Rt_hist <- c()
+ll_hist <- c()
   
 for(u in 1: 10){ ## Try 10 iterations
-  
+
+  cat('============== Iteration ', u,' ==============\n')
   ## E-step
+  ## Initialize countings
+  for(i in 1:(m-nroot)){
+    N_list[[1]][[i]] <- array(1e-4,
+                              dim=numvalues[which(adjmat[,(i+nroot)]==1)])
+    N_list[[2]][[i]] <- array(1e-4,
+                              dim=numvalues[which(adjmat[,(i+nroot)]==1)])
+  }
   
   for(i in 1:nrow(data)){
     if (sum(is.na(data)) == 0){
@@ -105,7 +105,7 @@ for(u in 1: 10){ ## Try 10 iterations
     }else{
       
       ## Gibbs sampler
-      cat('Imputing samples ', i,'\n')
+      # cat('Imputing samples ', i,'\n')
       this.sample <- as.numeric(data[i,])
       this.sample[which(is.na(data[i,]))] <- base::sample(c(0,1),sum(is.na(data[i,])),replace=TRUE)
       
@@ -123,13 +123,23 @@ for(u in 1: 10){ ## Try 10 iterations
     }
   }
 
-
-  ## M-step
+  ## Calculate Estimated log-likelihood
   
+  ll <- sum(unlist(N_list[[1]])*log(1-unlist(theta_list))) + 
+    sum(unlist(N_list[[2]])*log(unlist(theta_list)))
+  cat('ll = ',ll, '\n')
+  ll_hist <- c(ll_hist,ll)
+  
+  
+  ## M-step
+
   s1 <- mapply("+", N_list[[1]], N_list[[2]], SIMPLIFY = FALSE)
   new_theta_list <- mapply("/",N_list[[2]], s1)
+  # ll <- sum(unlist(N_list[[1]])*log(1-unlist(new_theta_list))) + 
+  #   sum(unlist(N_list[[2]])*log(unlist(new_theta_list)))
   Rt <- abs(sum(unlist(new_theta_list) - unlist(theta_list)))
   Rt_hist <- c(Rt_hist,Rt)
+  # cat('ll = ',ll, '\n')
   cat('|theta-theta_0| = ',Rt, '\n')
   theta_list <- new_theta_list
   

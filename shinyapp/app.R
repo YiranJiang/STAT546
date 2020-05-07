@@ -51,8 +51,6 @@ vis.nodes$title  <- vis.nodes$symptom # Text on click
 vis.nodes$label  <- vis.nodes$symptom # Node label
 vis.nodes$size   <- vis.nodes$symptom_size*7 # Node size
 vis.nodes$borderWidth <- 2 # Node border width
-
-
 vis.nodes$color.border <- "black"
 vis.nodes$color.highlight.border <- "darkred"
 

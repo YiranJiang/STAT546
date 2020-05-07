@@ -64,8 +64,7 @@ vis.links$shadow <- FALSE    # edge shadow
 
 ui <- fluidPage(theme = "bootstrap.min.css",
   tags$h1("Shiny App"),
-  HTML("<a href=\"http://www.google.com\">Shiny Showcase</a>"),
-  # tags$a("href=\"http://www.google.com\">Data Source<"),             
+  tags$a(href="http://www.google.com", "Data Source"), # temp             
   visNetworkOutput("network")
 )
 

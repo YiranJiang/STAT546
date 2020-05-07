@@ -10,7 +10,6 @@ library(visNetwork)
 library(shinythemes)
 library(shinycssloaders)
 ################################################################################
-## experiment data for node and link (to be changed)
 path_to_images <- "https://raw.githubusercontent.com/YiranJiang/STAT546_Final_Project_COVID-19_BN/master/shinyapp/img/"
 imagename <- c("Asymptomatic", "Gender", "Age",
                "Dyspnea", "Kidney",

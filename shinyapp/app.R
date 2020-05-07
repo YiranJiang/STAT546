@@ -7,7 +7,7 @@ library(rsconnect)
 library(png)
 library(visNetwork)
 
-#####################################################################
+################################################################################
 ## experiment data for node and link (to be changed)
 node <- data.frame("id" = c(paste("s0", 1:9, sep = ""),
                             paste("s", 10:14, sep = "")), 

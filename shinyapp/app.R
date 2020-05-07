@@ -62,8 +62,8 @@ vis.links$shadow <- FALSE    # edge shadow
 
 ###############################################################################
 
-ui <- fluidPage(theme = "bootstrap.min.css",
-  h1("Shiny App"),
+ui <- navbarPage(title = "Shiny App", theme = "bootstrap.min.css",
+  h1("COVID-19"),
   a(href="http://www.google.com", "Data Source"), # temp 
   img(height=100, width=1051/428*100,
            src="covid-virus.png"),

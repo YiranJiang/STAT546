@@ -87,7 +87,8 @@ server <- function(input, output){  #assemble input into output
                           main = "Bayesian Network of Symptoms",
                           submain = "Click nodes to see their nearby connections",
                           footer = "(Zoom in to show all node names)"),
-               highlightNearest = TRUE, selectedBy = "symptom_type")
+               highlightNearest = TRUE, selectedBy = "symptom_type")%>% 
+      visLayout(randomSeed = 3)
   })
   
 }

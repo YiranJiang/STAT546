@@ -1,9 +1,10 @@
 
-list_of_packages <- c("shiny", "png", "visNetwork")
+list_of_packages <- c("shiny", "png", "visNetwork", "rsconnect")
 new_packages <- list_of_packages[!(list_of_packages %in% installed.packages()[,"Package"])]
 if(length(new_packages)) install.packages(new_packages)
 
 library(shiny)
+library(rsconnect)
 library(png)
 library(visNetwork)
 
@@ -80,6 +81,6 @@ server <- function(input, output){  #assemble input into output
 ################################################################################
 shinyApp(ui = ui, server = server)
 
-# library(rsconnect)
+
 # rsconnect::setAccountInfo(name="<ACCOUNT>", token="<TOKEN>", secret="<SECRET>")
 # deployApp(appTitle = "STAT546Project")

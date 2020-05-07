@@ -65,7 +65,7 @@ vis.links$shadow <- FALSE    # edge shadow
 ui <- navbarPage(
   title = "Shiny App", 
   theme = "bootstrap.min.css",
-  tabPanel("Tab 1",
+  tabPanel(title = "Tab 1",
             h1("COVID-19"),
             a(href="http://www.google.com", "Data Source"), # temp 
             img(height=100, width=1051/428*100,

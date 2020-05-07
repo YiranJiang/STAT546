@@ -6,11 +6,22 @@ library(shiny)
 library(rsconnect)
 library(png)
 library(visNetwork)
-
+library(shinythemes)
+library(shinycssloaders)
 ################################################################################
 ## experiment data for node and link (to be changed)
+path_to_images <- "https://raw.githubusercontent.com/YiranJiang/STAT546_Final_Project_COVID-19_BN/master/shinyapp/img/"
+imagename <- c("Asymptomatic", "Gender", "Age",
+               "Dyspnea", "Kidney",
+               "Septic", "Heart",
+               "Fever", "Cough", "Anorxia",
+               "Chills", "Body",
+               "Diarrhea", "Rhinorrhea")
+
 node <- data.frame("id" = c(paste("s0", 1:9, sep = ""),
                             paste("s", 10:14, sep = "")), 
+                   "shape" = c("circularImage"),
+                   "image" = c(paste0(path_to_images, imagename, ".png")),
                    "symptom" = c("asymptomatic", "gender", "age",
                                  "dyspnea", "kidney injury",
                                  "septic shock", "heart failure",
@@ -33,10 +44,15 @@ link <- data.frame("from" = c("s03", "s03", "s02", "s02",
                    #"type" = c(),
                    "weight" = 1:15)
 
+visNetwork(node, link, width="500px", height="1000px", background="#eeefff",
+           main="Network", submain="BN for Symptoms",
+           footer= "Bayesian Network for Symptoms")%>% 
+  visNodes(shapeProperties = list(useBorderWithImage = TRUE))
+
 vis.nodes <- node
 vis.links <- link
 
-vis.nodes$shape  <- "dot"  
+# vis.nodes$shape  <- "dot"  
 vis.nodes$shadow <- TRUE # Nodes will drop shadow
 vis.nodes$title  <- vis.nodes$symptom # Text on click
 vis.nodes$label  <- vis.nodes$symptom # Node label
@@ -59,14 +75,18 @@ vis.links$shadow <- FALSE    # edge shadow
 ###############################################################################
 
 ui <- navbarPage(
+  theme = shinytheme('sandstone'),
   title = "Shiny App", 
-  theme = "bootstrap.min.css",
   tabPanel(title = "Tab 1",
+           sidebarPanel(
             h1("COVID-19"),
             a(href="http://www.google.com", "Data Source"), # temp 
             img(height=100, width=1051/428*100,
-                     src="covid-virus.png"),
-            visNetworkOutput("network")
+                     src="covid-virus.png")
+            ),
+           mainPanel(
+             visNetworkOutput("network")
+           )
   )
 )
 

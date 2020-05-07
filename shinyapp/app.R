@@ -33,10 +33,6 @@ link <- data.frame("from" = c("s03", "s03", "s02", "s02",
                    #"type" = c(),
                    "weight" = 1:15)
 
-visNetwork(node, link, width="100%", height="400px", background="#eeefff",
-           main="Network", submain="BN for Symptoms",
-           footer= "Bayesian Network for Symptoms")
-
 vis.nodes <- node
 vis.links <- link
 

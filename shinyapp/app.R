@@ -85,7 +85,7 @@ server <- function(input, output){  #assemble input into output
   output$network <- renderVisNetwork({
     visOptions(visNetwork(vis.nodes, vis.links, 
                           main = "Bayesian Network of Symptoms",
-                          submain = "Click nodes to see their connections",
+                          submain = "Click nodes to see their nearby connections",
                           footer = "(Zoom in to show all node names)"),
                highlightNearest = TRUE, selectedBy = "symptom_type")
   })

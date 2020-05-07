@@ -62,7 +62,8 @@ vis.links$shadow <- FALSE    # edge shadow
 
 ###############################################################################
 
-ui <- fluidPage(
+ui <- fluidPage(theme = "bootstrap.min.css",
+  HTML("<h1> Shiny App </h1>"),              
   visNetworkOutput("network")
 )
 

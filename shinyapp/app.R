@@ -83,7 +83,8 @@ ui <- navbarPage(
 server <- function(input, output){  #assemble input into output
   
   output$network <- renderVisNetwork({
-    visOptions(visNetwork(vis.nodes, vis.links, main = "Bayesian Network of Symptoms",
+    visOptions(visNetwork(vis.nodes, vis.links, 
+                          main = "Bayesian Network of Symptoms",
                           submain = "Click nodes to see their connections",
                           footer = "(Zoom in to show all node names)"),
                highlightNearest = TRUE, selectedBy = "symptom_type")

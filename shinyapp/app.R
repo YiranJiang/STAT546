@@ -64,7 +64,9 @@ vis.links$shadow <- FALSE    # edge shadow
 
 ui <- fluidPage(theme = "bootstrap.min.css",
   tags$h1("Shiny App"),
-  tags$a(href="http://www.google.com", "Data Source"), # temp             
+  tags$a(href="http://www.google.com", "Data Source"), # temp 
+  tags$img(height=100, width=200,
+           src="covid-virus.png"),
   visNetworkOutput("network")
 )
 

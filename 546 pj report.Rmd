@@ -1,0 +1,46 @@
+---
+title: "STAT 546 Final Project Report: An EM and Gibbs Sampling based Bayesian Network approach for estimating conditional probabilities of symptoms and outcomes for COVID-19 cases "
+author: "Yiran Jiang, Ziwei Su, Sihui Wang, Huiming Xie"
+date: "5/6/2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Since the first cases were identified in Wuhan, China in late 2019, the novel coronavirus has been spreading rapidly around the globe. As of May 7, 2020, there has been 3,755,379 confirmed cases of COVID-19, and 263,831 reported deaths. The need for understanding the inter-relationships among demographical information (e.g. age and gender), symptoms (including cough, fever, dyspnea, etc.) and outcomes (or prognosis, including death and recovery) is very urgent for diagnosis and identifying severe cases. 
+
+The aim of this study is to determine the relationship structure in terms of Bayesian Network, and estimate the corresponding conditional probabilities. To estimate the probabilies and cope with missing data, we determined the Bayesian Network structure, proposed and experimented the MAR-EM (EM algorithm for missing at random data) algorithm to estimate the conditional probabilities. Furthermore, the observed "0" (Not observed) symptom data suggests that the symptom is either not occurred or not recorded (missing). To deal with these uncertain datapoints, we proposed and experimented a modified EM algorithm.
+
+# Materials and Methods
+
+The data of this study is on github, provided by the Outbreak and Pandemic Preparedness team at the Institute for Health Metrics and Evaluation, University of Washington. The size of the data is 476126.
+
+We tranformed the age and outcome data into integer values $0-3$, the gender and symptom data into boolean data, and the following attributes are studied:
+
+Attributes|Numbers 0 1 2 3
+Age 0-19 20-39 40-59 60+
+Gender male female
+Outcome Recovery Death ICU Hospitalized 
+Symptoms: Not Recorded Recorded
+Fever	
+Cough	
+Dyspnea	
+Body.Pain	
+Diarrhea	
+Anorexia	
+Rhinorrhea	
+Chills	
+Asymptomatic	
+Kidney Injury	
+Heart Failure	
+Septic Shock
+
+We use Bayesian Network to represent the data, and the attributes listed above are the nodes of our network. To determine the structure of the Bayesian Network, we use the bnlearn package in R to do structure learning. Then we use the learned structures and medical knowledge to determine the structure of the Bayesian Network, creating a directed acyclic graph (DAG) structure, and generating the adjacency matrix.
+
+Then, we seek to learn the parameters (conditional probabilities between connected nodes) by the following MAR-EM algorithm:
+
+

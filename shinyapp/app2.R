@@ -11,12 +11,10 @@ library(visNetwork)
 library(shinythemes)
 library(shinycssloaders)
 
-result <- load('../output/algo1_result.RData')
-adjmat <- read.csv('../data/Adjacency Matrix.csv')
+load('../output/algo1_result.RData')
+load('../data/adjmat.RData')
 theta_list <- my_result$theta_list
 source('./doc/functions.R')
-# v <- c(1,1,1,1,0,0,0,rep(NA,8))
-# get_prob(adjmat,theta_list,v)
 
 ################################################################################
 path_to_images <- "https://raw.githubusercontent.com/YiranJiang/STAT546_Final_Project_COVID-19_BN/master/shinyapp/img/"
@@ -190,13 +188,42 @@ server <- function(input, output){  #assemble input into output
     ## Warning! The Order Changed!!!!!!!
     this.order <- c(3,2,9,13,10,11,8,4,12,14,1,5,7,6,15)
     in_vector <- in_vector[this.order]
+    # true order c(1,2,9,13,10,11,8,4,12,14,3,5,7,6,15) 
+    # names(in_vector) changes accordingly
     prob.list <- get_prob(adjmat, theta_list, in_vector)
     ## Warning! The Order Changed!!!!!!!
     
+    
+    #####  
+    
+    node_order <- rep(NA, length(in_vector))
+    for (i in 1:(length(in_vector)-1)){
+      node_order[i] <- which(node$symptom == names(in_vector)[i])
+    }
+    
+    node$prob <- rep(NA, nrow(node))
+    na_pos <- which(is.na(in_vector))
+    
+    for (i in na_pos){
+        node$prob[node_order[i]] = ifelse(is.na(prob.list[[i]][1]),
+                                          prob.list[[i]][2],
+                                          1 - prob.list[[i]][1])
+    }
+    
+
     this.suffix <- c(rep("_locked",15))
     this.suffix[which(is.na(in_vector))] <- ""
     
     vis.nodes2 <- vis.nodes
+    vis.nodes2$label <- paste(vis.nodes$symptom, "\n",
+                              ifelse(is.na(node$prob), "", 
+                              paste(round(node$prob,4)*100, "%", sep = "")),
+                              sep = "")
+    
+    
+    #####
+    
+    # original node order
     vis.nodes2$image <- c(paste0(path_to_images, imagename, this.suffix, ".png"))
 
     visOptions(visNetwork(vis.nodes2, vis.links,
@@ -209,34 +236,6 @@ server <- function(input, output){  #assemble input into output
     })
   })
 
-  
-
-  # observeEvent(input$button, 
-  #              {
-                 # in_vector <- rep(NA, 15)
-                 # names(in_vector) <- c( "age", "gender", "asymptomatic",
-                 #                       "dyspnea", "kidney injury",
-                 #                       "septic shock", "heart failure",
-                 #                       "fever", "cough", "anorexia",
-                 #                       "chills", "body pain",
-                 #                       "diarrhea", "rhinorrhea")
-                 # 
-                 # if (input$age=="Group 1 (0-20)") in_vector[1] <- 0
-                 # else if(input$age=="Group 2 (20-40)") in_vector[1] <- 1
-                 # else if(input$age=="Group 3 (40-60)") in_vector[1] <- 2
-                 # else if(input$age=="Group 4 (60+)") in_vector[1] <- 3
-                 # 
-                 # if (input$gender=="Male") in_vector[2] <- 0
-                 # else if (input$gender=="Female") in_vector[2] <- 1
-                 # 
-                 # for(i in 1:length(symps)){
-                 #   if (symps[i] %in% input$symptoms) in_vector[i+2] <- 1
-                 #   if (symps[i] %in% input$nosuchsymptom) in_vector[i+2] <- 0
-                 # }
-                 # output$vector <- renderText(as.character(in_vector))
-              # }
-  # 
-  #              )
 }
 
 shinyApp(ui = ui, server = server)

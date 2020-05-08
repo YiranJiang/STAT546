@@ -9,6 +9,13 @@ library(png)
 library(visNetwork)
 library(shinythemes)
 library(shinycssloaders)
+
+result <- load('../output/algo1_result.RData')
+adjmat <- read.csv('../data/Adjacency Matrix.csv')
+theta_list <- my_result$theta_list
+source('./doc/functions.R')
+
+
 ################################################################################
 path_to_images <- "https://raw.githubusercontent.com/YiranJiang/STAT546_Final_Project_COVID-19_BN/master/shinyapp/img/"
 imagename <- c("Asymptomatic", "Gender", "Age",

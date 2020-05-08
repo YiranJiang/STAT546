@@ -11,7 +11,7 @@ library(visNetwork)
 library(shinythemes)
 library(shinycssloaders)
 
-load('../output/algo1_result.RData')
+load('../output/algo2_result.RData')
 load('../data/adjmat.RData')
 theta_list <- my_result$theta_list
 source('./doc/functions.R')
@@ -35,7 +35,7 @@ node <- data.frame("id" = c(paste("s0", 1:9, sep = ""),
                                  "fever", "cough", "anorexia",
                                  "chills", "body pain",
                                  "diarrhea", "rhinorrhea",
-                                 "outcomes"),
+                                 "outcome"),
                    "symptom_type" = c("asymptomatic", rep("basic info", 2),
                                       rep("severe symptoms", 4),
                                       rep("mild symptoms", 7),
@@ -69,7 +69,7 @@ vis.links$arrows <- "to" # arrows: 'from', 'to', or 'middle'
 vis.links$smooth <- FALSE   # should the edges be curved?
 vis.links$shadow <- FALSE    # edge shadow
 
-symps <- node$symptom[-c(2,3)]
+symps <- node$symptom[-c(2,3,15)]
 
 ################################################################################
 
@@ -80,7 +80,7 @@ ui <- navbarPage(
            sidebarPanel(
              h1("COVID-19"),
              a(href="https://github.com/beoutbreakprepared/nCoV2019/tree/master/latest_data",
-               "Data Source"), # temp
+               "Data Source"), 
              img(height=100, width=1051/428*100,
                  src="covid-virus.png")
            ),
@@ -98,8 +98,8 @@ ui <- navbarPage(
                selectInput(
                  inputId = "age",
                  label = "Age",
-                 choices = list("Group 1", "Group 2",
-                                "Group 3", "Group 4",
+                 choices = list("0-19", "20-39",
+                                "40-59", "60+",
                                 "Secret"),
                  selected = "Secret"
                ),
@@ -169,12 +169,12 @@ server <- function(input, output){  #assemble input into output
                            "septic shock", "heart failure",
                            "fever", "cough", "anorexia",
                            "chills", "body pain",
-                           "diarrhea", "rhinorrhea")
+                           "diarrhea", "rhinorrhea", "outcome")
     
-    if (input$age=="Group 1") in_vector[1] <- 0
-    else if(input$age=="Group 2") in_vector[1] <- 1
-    else if(input$age=="Group 3") in_vector[1] <- 2
-    else if(input$age=="Group 4") in_vector[1] <- 3
+    if (input$age=="0-19") in_vector[1] <- 0
+    else if(input$age=="20-39") in_vector[1] <- 1
+    else if(input$age=="40-59") in_vector[1] <- 2
+    else if(input$age=="60+") in_vector[1] <- 3
     
     if (input$gender=="Male") in_vector[2] <- 0
     else if (input$gender=="Female") in_vector[2] <- 1
@@ -184,26 +184,26 @@ server <- function(input, output){  #assemble input into output
       if (symps[i] %in% input$nosuchsymptom) in_vector[i+2] <- 0
     }
     
-    in_vector[c(1,3)] <- in_vector[c(3,1)]
+    #in_vector[c(1,3)] <- in_vector[c(3,1)]
     ## Warning! The Order Changed!!!!!!!
-    this.order <- c(3,2,9,13,10,11,8,4,12,14,1,5,7,6,15)
+    this.order <- c(1,2,9,13,10,11,8,4,12,14,3,5,7,6,15)
     in_vector <- in_vector[this.order]
     # true order c(1,2,9,13,10,11,8,4,12,14,3,5,7,6,15) 
-    # names(in_vector) changes accordingly
+    # names(in_vector) changes accordingly except 1 and 3
     prob.list <- get_prob(adjmat, theta_list, in_vector)
     ## Warning! The Order Changed!!!!!!!
-    
+    # names(in_vector)[15] <- "outcome"
     
     #####  
     
     node_order <- rep(NA, length(in_vector))
-    for (i in 1:(length(in_vector)-1)){
+    for (i in 1:length(in_vector)){
       node_order[i] <- which(node$symptom == names(in_vector)[i])
     }
-    
+
     node$prob <- rep(NA, nrow(node))
     na_pos <- which(is.na(in_vector))
-    
+
     for (i in na_pos){
         node$prob[node_order[i]] = ifelse(is.na(prob.list[[i]][1]),
                                           prob.list[[i]][2],
@@ -212,11 +212,11 @@ server <- function(input, output){  #assemble input into output
     
 
     this.suffix <- c(rep("_locked",15))
-    this.suffix[which(is.na(in_vector))] <- ""
+    this.suffix[which(!is.na(node$prob))] <- ""
     
     vis.nodes2 <- vis.nodes
     vis.nodes2$label <- paste(vis.nodes$symptom, "\n",
-                              ifelse(is.na(node$prob), "", 
+                              ifelse(is.na(node$prob), "",
                               paste(round(node$prob,4)*100, "%", sep = "")),
                               sep = "")
     
@@ -227,7 +227,7 @@ server <- function(input, output){  #assemble input into output
     vis.nodes2$image <- c(paste0(path_to_images, imagename, this.suffix, ".png"))
 
     visOptions(visNetwork(vis.nodes2, vis.links,
-                          main = "Bayesian Network of Symptoms",
+                          main = "Bayesian Network of Symptoms with Predicted Proababilities",
                           submain = "Click nodes to see their nearby connections",
                           footer = "(Zoom in to show all node names)"),
                highlightNearest = TRUE)%>%
@@ -241,5 +241,5 @@ server <- function(input, output){  #assemble input into output
 shinyApp(ui = ui, server = server)
 
 # rsconnect::setAccountInfo(name="<ACCOUNT>", token="<TOKEN>", secret="<SECRET>")
-# deployApp(appTitle = "STAT546Project")
+# deployApp(appTitle = "COVID19BN")
 

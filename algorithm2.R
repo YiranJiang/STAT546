@@ -1,30 +1,33 @@
 ## Algorithm 1
 
-setwd('/Users/jiangyiran/Desktop/Purdue/2020Spring/546/project/covid-19')
-data <- read.csv('./cleaned_data.csv')
-adjmat <- read.csv('./Adjacency Matrix.csv')
+# setwd('/Users/jiangyiran/Desktop/Purdue/2020Spring/546/project/covid-19')
+data <- read.csv('./data/cleaned_data.csv')
+# adjmat <- read.csv('./data/Adjacency Matrix.csv')
 
 n <- nrow(data)
 m <- 15
-names <- as.character(adjmat$X)[-16]
-adjmat <- t(as.matrix(adjmat[1:15,2:16]))
-rownames(adjmat) <- names
-colnames(adjmat) <- names
-adjmat[6,3] <- 0
-adjmat[9,7] <- 0
-adjmat[6:14,15] <- 0
+# names <- as.character(adjmat$X)[-16]
+# adjmat <- t(as.matrix(adjmat[1:15,2:16]))
+# rownames(adjmat) <- names
+# colnames(adjmat) <- names
+# adjmat[6,3] <- 0
+# adjmat[9,7] <- 0
+# adjmat[6:14,15] <- 0
+# save(adjmat,file = './data/adjmat.Rdata')
+
+load('./data/adjmat.RData')
 
 ## Input Hyperparameter
-p <- 0.3
+p <- 0.7
 my_order <- c(1,2,4,7,8,10,3,5,6,9,11,12,13,14,15)
 data <- data[,my_order]
+adjmat <- adjmat[my_order,my_order]
 
 data_star <- data
 for (i in 3:14){
   data_star[!is.na(data_star[,i]) &data_star[,i] == 0,i] <- NA
 }
 
-adjmat <- adjmat[my_order,my_order]
 nroot <- 6
 numvalues <- c(4,rep(2,14)) ## number of values that can be taken of each parameter
 

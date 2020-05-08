@@ -1,13 +1,13 @@
 get_prob <- function(adjmat,theta_list,inputinfo){
   m <- 15
   nroot <- 6
-  names <- as.character(adjmat$X)[-16]
-  adjmat <- t(as.matrix(adjmat[1:15,2:16]))
-  rownames(adjmat) <- names
-  colnames(adjmat) <- names
-  adjmat[6,3] <- 0
-  adjmat[9,7] <- 0
-  adjmat[6:14,15] <- 0
+  # names <- as.character(adjmat$X)[-16]
+  # adjmat <- t(as.matrix(adjmat[1:15,2:16]))
+  # rownames(adjmat) <- names
+  # colnames(adjmat) <- names
+  # adjmat[6,3] <- 0
+  # adjmat[9,7] <- 0
+  # adjmat[6:14,15] <- 0
   
   my_order <- c(1,2,4,7,8,10,3,5,6,9,11,12,13,14,15)
   adjmat <- adjmat[my_order,my_order]

@@ -77,7 +77,7 @@ symps <- node$symptom[-c(2,3,15)]
 
 ui <- navbarPage(
   theme = shinytheme('sandstone'),
-  title = "Shiny App",
+  title = "BN for COVID-19",
   tabPanel(title = "Overview",
            sidebarPanel(
              h1("COVID-19"),
@@ -135,7 +135,73 @@ ui <- navbarPage(
                visNetworkOutput("network2")
              )
              )
-  )
+  ),
+  
+  tabPanel(title = "Other Infomation",
+           wellPanel(width = 5,
+             radioButtons(
+               inputId = "geninfo",
+               label = "Select Information Type:",
+               choices = list("GIS Outcomes", "Edge Plots")
+             )
+           ),
+           
+           uiOutput(outputId = "info_img")
+           ),
+  
+  tabPanel(title = "Group Members",
+           fluidRow(column(3,
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           wellPanel(
+                             p("Yiran Jiang"),
+                             p("Statistics Department"),
+                             p("Purdue University"),
+                             p("jiang693@purdue.edu")
+                             ),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           wellPanel(
+                             p("Sihui Wang"),
+                             p("Statistics Department"),
+                             p("Purdue University"),
+                             p("wang1190@purdue.edu")
+                             )
+                           ),
+                           
+                    column(4,img(width = 910/1.8,
+                                 height = 1053/1.8,
+                                 src = "group3.png")),
+                    column(3,
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           wellPanel(
+                             p("Huiming Xie"),
+                             p("Statistics Department"),
+                             p("Purdue University"),
+                             p("xie339@purdue.edu")
+                           ),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           br(),
+                           wellPanel(
+                             p("Ziwei Su"),
+                             p("Statistics Department"),
+                             p("Purdue University"),
+                             p("su230@purdue.edu")
+                           )
+                    )
+                    )
+           )
 )
 
 ################################################################################
@@ -145,7 +211,7 @@ server <- function(input, output){  #assemble input into output
   output$network <- renderVisNetwork({
     visOptions(visNetwork(vis.nodes[1:14,], vis.links[1:14,],
                           main = "Bayesian Network of Symptoms",
-                          submain = "Click nodes to see their nearby connections",
+                          submain = "Click nodes to see their nearby connections; drag nodes to reorganize",
                           footer = "(Zoom in to show all node names)"),
                highlightNearest = TRUE, selectedBy = "symptom_type")%>%
       visLayout(randomSeed = 3)
@@ -221,12 +287,36 @@ server <- function(input, output){  #assemble input into output
 
     visOptions(visNetwork(vis.nodes2, vis.links,
                           main = "Bayesian Network of Symptoms with Predicted Proababilities",
-                          submain = "Click nodes to see their nearby connections",
+                          submain = "Click nodes to see their nearby connections; drag nodes to reorganize",
                           footer = "(Zoom in to show all node names)"),
                highlightNearest = TRUE)%>%
     visLayout(randomSeed = 3)
     
     })
+  })
+  
+  output$info_img <- renderUI({
+    if ( input$geninfo == "GIS Outcomes"){
+      mainPanel(
+        fluidRow(column(1),
+                 column(10, 
+                        img(src = "map.png", 
+                            width = 2483/2.65, 
+                            height = 1072/2.65)
+                        )
+        )
+      )
+    }
+    else {
+      mainPanel(
+        fluidRow(column(2),
+                 column(10, 
+                        img(src = "edgeplot.png",
+                            width = 2248/3, 
+                            height = 1240/3))
+        )
+      )
+    }
   })
 
 }
